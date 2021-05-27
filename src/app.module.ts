@@ -6,9 +6,10 @@ import { PublishersModule } from './publishers/publishers.module';
 import { GamesModule } from './games/games.module';
 import { GenresModule } from './genres/genres.module';
 import { PlatformsModule } from './platforms/platforms.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [DevelopersModule, PublishersModule, GamesModule, GenresModule, PlatformsModule],
+  imports: [DevelopersModule, PublishersModule, GamesModule, GenresModule, PlatformsModule, UsersModule],
   controllers: [AppController],
   providers: [AppService],
 })
