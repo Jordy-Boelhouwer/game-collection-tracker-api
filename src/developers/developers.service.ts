@@ -37,7 +37,7 @@ export class DevelopersService {
       this.developers[developerIndex] = developer;
       return developer;
     }
-    throw new HttpException('Post not found', HttpStatus.NOT_FOUND);
+    throw new HttpException('Developer not found', HttpStatus.NOT_FOUND);
   }
 
   remove(id: number) {
