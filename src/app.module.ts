@@ -9,7 +9,7 @@ import { GenresModule } from './genres/genres.module';
 import { PlatformsModule } from './platforms/platforms.module';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
-import Joi from 'joi';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
