@@ -8,6 +8,7 @@ import { GamesModule } from './games/games.module';
 import { GenresModule } from './genres/genres.module';
 import { PlatformsModule } from './platforms/platforms.module';
 import { UsersModule } from './users/users.module';
+import { DatabaseModule } from './database/database.module';
 import Joi from 'joi';
 
 @Module({
@@ -28,6 +29,7 @@ import Joi from 'joi';
         PORT: Joi.number(),
       }),
     }),
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
