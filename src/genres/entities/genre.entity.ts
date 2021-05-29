@@ -1,1 +1,10 @@
-export class Genre {}
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Genre {
+  @PrimaryGeneratedColumn()
+  public id: number;
+
+  @Column()
+  public name: string;
+}

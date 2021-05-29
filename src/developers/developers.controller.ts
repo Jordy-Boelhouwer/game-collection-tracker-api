@@ -22,7 +22,7 @@ export class DevelopersController {
 
   @Get(':id')
   findOneById(@Param('id') id: string) {
-    return this.developersService.findOne(Number(id));
+    return this.developersService.findOneById(Number(id));
   }
 
   @Post()

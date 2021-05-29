@@ -1,6 +1,4 @@
-export interface Developer {
+export interface IDeveloper {
   id: number;
   name: string;
 }
-
-export default Developer;

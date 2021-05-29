@@ -1,48 +1,47 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './user.interface';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private lastUserId = 0;
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(User)
+    private usersRepository: Repository<User>,
+  ) {}
 
   findAll() {
-    return this.users;
+    return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    const user = this.users.find((user) => user.id === id);
+  async findOneById(id: number) {
+    const user = await this.usersRepository.findOne(id);
     if (user) {
       return user;
     }
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  create(user: CreateUserDto) {
-    const newUser = {
-      id: ++this.lastUserId,
-      ...user,
-    };
-    this.users.push(newUser);
+  async create(user: CreateUserDto) {
+    const newUser = this.usersRepository.create(user);
+    await this.usersRepository.save(newUser);
     return newUser;
   }
 
-  update(id: number, user: UpdateUserDto) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex > -1) {
-      this.users[userIndex] = user;
-      return user;
+  async update(id: number, user: UpdateUserDto) {
+    await this.usersRepository.update(id, user);
+    const updatedUser = await this.usersRepository.findOne(id);
+    if (updatedUser) {
+      return updatedUser;
     }
     throw new HttpException('User not found', HttpStatus.NOT_FOUND);
   }
 
-  remove(id: number) {
-    const userIndex = this.users.findIndex((user) => user.id === id);
-    if (userIndex > -1) {
-      this.users.splice(userIndex, 1);
-    } else {
+  async remove(id: number) {
+    const deleteResponse = await this.usersRepository.delete(id);
+    if (!deleteResponse.affected) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
   }

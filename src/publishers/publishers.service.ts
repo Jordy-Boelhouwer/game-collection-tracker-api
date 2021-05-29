@@ -1,52 +1,47 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { UpdatePublisherDto } from './dto/update-publisher.dto';
-import { Publisher } from './publisher.interface';
+import { Publisher } from './entities/publisher.entity';
 
 @Injectable()
 export class PublishersService {
-  private lastPublisherId = 0;
-  private publishers: Publisher[] = [];
+  constructor(
+    @InjectRepository(Publisher)
+    private publishersRepository: Repository<Publisher>,
+  ) {}
 
   findAll() {
-    return this.publishers;
+    return this.publishersRepository.find();
   }
 
-  findOne(id: number) {
-    const publisher = this.publishers.find((publisher) => publisher.id === id);
+  async findOneById(id: number) {
+    const publisher = await this.publishersRepository.findOne(id);
     if (publisher) {
       return publisher;
     }
     throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
   }
 
-  create(publisher: CreatePublisherDto) {
-    const newPublisher = {
-      id: ++this.lastPublisherId,
-      ...publisher,
-    };
-    this.publishers.push(newPublisher);
+  async create(publisher: CreatePublisherDto) {
+    const newPublisher = this.publishersRepository.create(publisher);
+    await this.publishersRepository.save(newPublisher);
     return newPublisher;
   }
 
-  update(id: number, publisher: UpdatePublisherDto) {
-    const publisherIndex = this.publishers.findIndex(
-      (publisher) => publisher.id === id,
-    );
-    if (publisherIndex > -1) {
-      this.publishers[publisherIndex] = publisher;
-      return publisher;
+  async update(id: number, publisher: UpdatePublisherDto) {
+    await this.publishersRepository.update(id, publisher);
+    const updatedPublisher = await this.publishersRepository.findOne(id);
+    if (updatedPublisher) {
+      return updatedPublisher;
     }
     throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
   }
 
-  remove(id: number) {
-    const publisherIndex = this.publishers.findIndex(
-      (publisher) => publisher.id === id,
-    );
-    if (publisherIndex > -1) {
-      this.publishers.splice(publisherIndex, 1);
-    } else {
+  async remove(id: number) {
+    const deleteResponse = await this.publishersRepository.delete(id);
+    if (!deleteResponse.affected) {
       throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
     }
   }

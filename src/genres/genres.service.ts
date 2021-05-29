@@ -1,48 +1,47 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
-import { Genre } from './genre.interface';
+import { Genre } from './entities/genre.entity';
 
 @Injectable()
 export class GenresService {
-  private lastGenreId = 0;
-  private genres: Genre[] = [];
+  constructor(
+    @InjectRepository(Genre)
+    private genresRepository: Repository<Genre>,
+  ) {}
 
   findAll() {
-    return this.genres;
+    return this.genresRepository.find();
   }
 
-  findOne(id: number) {
-    const genre = this.genres.find((genre) => genre.id === id);
+  async findOneById(id: number) {
+    const genre = await this.genresRepository.findOne(id);
     if (genre) {
       return genre;
     }
     throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
   }
 
-  create(genre: CreateGenreDto) {
-    const newGenre = {
-      id: ++this.lastGenreId,
-      ...genre,
-    };
-    this.genres.push(newGenre);
+  async create(genre: CreateGenreDto) {
+    const newGenre = this.genresRepository.create(genre);
+    await this.genresRepository.save(newGenre);
     return newGenre;
   }
 
-  update(id: number, genre: UpdateGenreDto) {
-    const genreIndex = this.genres.findIndex((genre) => genre.id === id);
-    if (genreIndex > -1) {
-      this.genres[genreIndex] = genre;
-      return genre;
+  async update(id: number, genre: UpdateGenreDto) {
+    await this.genresRepository.update(id, genre);
+    const updatedGenre = await this.genresRepository.findOne(id);
+    if (updatedGenre) {
+      return updatedGenre;
     }
     throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
   }
 
-  remove(id: number) {
-    const genreIndex = this.genres.findIndex((genre) => genre.id === id);
-    if (genreIndex > -1) {
-      this.genres.splice(genreIndex, 1);
-    } else {
+  async remove(id: number) {
+    const deleteResponse = await this.genresRepository.delete(id);
+    if (!deleteResponse.affected) {
       throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
     }
   }
