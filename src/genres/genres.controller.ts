@@ -22,7 +22,7 @@ export class GenresController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.genresService.findOne(Number(id));
+    return this.genresService.findOneById(Number(id));
   }
 
   @Post()

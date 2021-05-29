@@ -22,7 +22,7 @@ export class PlatformsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.platformsService.findOne(Number(id));
+    return this.platformsService.findOneById(Number(id));
   }
 
   @Post()

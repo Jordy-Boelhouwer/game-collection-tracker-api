@@ -22,7 +22,7 @@ export class PublishersController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.publishersService.findOne(Number(id));
+    return this.publishersService.findOneById(Number(id));
   }
 
   @Post()

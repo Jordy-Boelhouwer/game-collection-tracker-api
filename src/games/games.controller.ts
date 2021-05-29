@@ -22,7 +22,7 @@ export class GamesController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.gamesService.findOne(Number(id));
+    return this.gamesService.findOneById(Number(id));
   }
 
   @Post()
