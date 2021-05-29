@@ -1,52 +1,47 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreatePlatformDto } from './dto/create-platform.dto';
 import { UpdatePlatformDto } from './dto/update-platform.dto';
-import { Platform } from './platform.interface';
+import { Platform } from './entities/platform.entity';
 
 @Injectable()
 export class PlatformsService {
-  private lastPlatformId = 0;
-  private platforms: Platform[] = [];
+  constructor(
+    @InjectRepository(Platform)
+    private platformsRepository: Repository<Platform>,
+  ) {}
 
   findAll() {
-    return this.platforms;
+    return this.platformsRepository.find();
   }
 
-  findOne(id: number) {
-    const platform = this.platforms.find((platform) => platform.id === id);
+  async findOneById(id: number) {
+    const platform = await this.platformsRepository.findOne(id);
     if (platform) {
       return platform;
     }
     throw new HttpException('Platform not found', HttpStatus.NOT_FOUND);
   }
 
-  create(platform: CreatePlatformDto) {
-    const newPlatform = {
-      id: ++this.lastPlatformId,
-      ...platform,
-    };
-    this.platforms.push(newPlatform);
+  async create(platform: CreatePlatformDto) {
+    const newPlatform = this.platformsRepository.create(platform);
+    await this.platformsRepository.save(newPlatform);
     return newPlatform;
   }
 
-  update(id: number, platform: UpdatePlatformDto) {
-    const platformIndex = this.platforms.findIndex(
-      (platform) => platform.id === id,
-    );
-    if (platformIndex > -1) {
-      this.platforms[platformIndex] = platform;
-      return platform;
+  async update(id: number, platform: UpdatePlatformDto) {
+    await this.platformsRepository.update(id, platform);
+    const updatedPlatform = await this.platformsRepository.findOne(id);
+    if (updatedPlatform) {
+      return updatedPlatform;
     }
     throw new HttpException('Platform not found', HttpStatus.NOT_FOUND);
   }
 
-  remove(id: number) {
-    const platformIndex = this.platforms.findIndex(
-      (platform) => platform.id === id,
-    );
-    if (platformIndex > -1) {
-      this.platforms.splice(platformIndex, 1);
-    } else {
+  async remove(id: number) {
+    const deleteResponse = await this.platformsRepository.delete(id);
+    if (!deleteResponse.affected) {
       throw new HttpException('Platform not found', HttpStatus.NOT_FOUND);
     }
   }
