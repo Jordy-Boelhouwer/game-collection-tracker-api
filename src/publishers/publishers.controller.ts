@@ -10,6 +10,7 @@ import {
 import { PublishersService } from './publishers.service';
 import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { UpdatePublisherDto } from './dto/update-publisher.dto';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('publishers')
 export class PublishersController {
@@ -21,7 +22,7 @@ export class PublishersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() { id }: FindOneParams) {
     return this.publishersService.findOneById(Number(id));
   }
 
@@ -31,12 +32,15 @@ export class PublishersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() publisher: UpdatePublisherDto) {
+  update(
+    @Param() { id }: FindOneParams,
+    @Body() publisher: UpdatePublisherDto,
+  ) {
     return this.publishersService.update(Number(id), publisher);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: FindOneParams) {
     return this.publishersService.remove(Number(id));
   }
 }

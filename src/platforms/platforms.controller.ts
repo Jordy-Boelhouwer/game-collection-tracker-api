@@ -10,6 +10,7 @@ import {
 import { PlatformsService } from './platforms.service';
 import { CreatePlatformDto } from './dto/create-platform.dto';
 import { UpdatePlatformDto } from './dto/update-platform.dto';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('platforms')
 export class PlatformsController {
@@ -21,7 +22,7 @@ export class PlatformsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() { id }: FindOneParams) {
     return this.platformsService.findOneById(Number(id));
   }
 
@@ -31,12 +32,12 @@ export class PlatformsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() platform: UpdatePlatformDto) {
+  update(@Param() { id }: FindOneParams, @Body() platform: UpdatePlatformDto) {
     return this.platformsService.update(Number(id), platform);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: FindOneParams) {
     return this.platformsService.remove(Number(id));
   }
 }
