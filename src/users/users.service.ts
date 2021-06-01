@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { UserNotFoundException } from './exceptions/userNotFoundException';
 
 @Injectable()
 export class UsersService {
@@ -21,7 +22,7 @@ export class UsersService {
     if (user) {
       return user;
     }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    throw new UserNotFoundException(id);
   }
 
   async findOneByEmail(email: string) {
@@ -47,13 +48,13 @@ export class UsersService {
     if (updatedUser) {
       return updatedUser;
     }
-    throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    throw new UserNotFoundException(id);
   }
 
   async remove(id: number) {
     const deleteResponse = await this.usersRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new UserNotFoundException(id);
     }
   }
 }

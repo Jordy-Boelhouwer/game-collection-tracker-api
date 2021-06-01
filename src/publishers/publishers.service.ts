@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePublisherDto } from './dto/create-publisher.dto';
 import { UpdatePublisherDto } from './dto/update-publisher.dto';
 import { Publisher } from './entities/publisher.entity';
+import { PublisherNotFoundException } from './exceptions/publisherNotFound.exception';
 
 @Injectable()
 export class PublishersService {
@@ -21,7 +22,7 @@ export class PublishersService {
     if (publisher) {
       return publisher;
     }
-    throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
+    throw new PublisherNotFoundException(id);
   }
 
   async create(publisher: CreatePublisherDto) {
@@ -36,13 +37,13 @@ export class PublishersService {
     if (updatedPublisher) {
       return updatedPublisher;
     }
-    throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
+    throw new PublisherNotFoundException(id);
   }
 
   async remove(id: number) {
     const deleteResponse = await this.publishersRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('Publisher not found', HttpStatus.NOT_FOUND);
+      throw new PublisherNotFoundException(id);
     }
   }
 }

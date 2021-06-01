@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateDeveloperDto } from './dto/create-developer.dto';
 import { UpdateDeveloperDto } from './dto/update-developer.dto';
 import { Developer } from './entities/developer.entity';
 import { Repository } from 'typeorm';
+import { DeveloperNotFoundException } from './exceptions/developerNotFound.exception';
 
 @Injectable()
 export class DevelopersService {
@@ -21,7 +22,7 @@ export class DevelopersService {
     if (developer) {
       return developer;
     }
-    throw new HttpException('Developer not found', HttpStatus.NOT_FOUND);
+    throw new DeveloperNotFoundException(id);
   }
 
   async create(developer: CreateDeveloperDto) {
@@ -36,13 +37,13 @@ export class DevelopersService {
     if (updatedDeveloper) {
       return updatedDeveloper;
     }
-    throw new HttpException('Developer not found', HttpStatus.NOT_FOUND);
+    throw new DeveloperNotFoundException(id);
   }
 
   async remove(id: number) {
     const deleteResponse = await this.developersRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('Developer not found', HttpStatus.NOT_FOUND);
+      throw new DeveloperNotFoundException(id);
     }
   }
 }
