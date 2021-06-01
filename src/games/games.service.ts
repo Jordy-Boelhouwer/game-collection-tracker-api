@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
 import { Game } from './entities/game.entity';
+import { GameNotFoundException } from './exceptions/gameNotFound.exception';
 
 @Injectable()
 export class GamesService {
@@ -21,7 +22,7 @@ export class GamesService {
     if (game) {
       return game;
     }
-    throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+    throw new GameNotFoundException(id);
   }
 
   async create(game: CreateGameDto) {
@@ -36,13 +37,13 @@ export class GamesService {
     if (updatedGame) {
       return updatedGame;
     }
-    throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+    throw new GameNotFoundException(id);
   }
 
   async remove(id: number) {
     const deleteResponse = await this.gamesRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('Game not found', HttpStatus.NOT_FOUND);
+      throw new GameNotFoundException(id);
     }
   }
 }

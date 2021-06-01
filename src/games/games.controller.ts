@@ -10,6 +10,7 @@ import {
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
 import { UpdateGameDto } from './dto/update-game.dto';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('games')
 export class GamesController {
@@ -21,7 +22,7 @@ export class GamesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() { id }: FindOneParams) {
     return this.gamesService.findOneById(Number(id));
   }
 
@@ -31,12 +32,12 @@ export class GamesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() game: UpdateGameDto) {
+  update(@Param() { id }: FindOneParams, @Body() game: UpdateGameDto) {
     return this.gamesService.update(Number(id), game);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: FindOneParams) {
     return this.gamesService.remove(Number(id));
   }
 }

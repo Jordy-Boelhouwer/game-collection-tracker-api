@@ -10,6 +10,7 @@ import {
 import { GenresService } from './genres.service';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('genres')
 export class GenresController {
@@ -21,7 +22,7 @@ export class GenresController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() { id }: FindOneParams) {
     return this.genresService.findOneById(Number(id));
   }
 
@@ -31,12 +32,12 @@ export class GenresController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() genre: UpdateGenreDto) {
+  update(@Param() { id }: FindOneParams, @Body() genre: UpdateGenreDto) {
     return this.genresService.update(Number(id), genre);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: FindOneParams) {
     return this.genresService.remove(Number(id));
   }
 }

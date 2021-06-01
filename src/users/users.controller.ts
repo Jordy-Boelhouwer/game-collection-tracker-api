@@ -10,6 +10,7 @@ import {
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindOneParams } from '../utils/findOneParams';
 
 @Controller('users')
 export class UsersController {
@@ -21,7 +22,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param() { id }: FindOneParams) {
     return this.usersService.findOneById(Number(id));
   }
 
@@ -31,12 +32,12 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() user: UpdateUserDto) {
+  update(@Param() { id }: FindOneParams, @Body() user: UpdateUserDto) {
     return this.usersService.update(Number(id), user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param() { id }: FindOneParams) {
     return this.usersService.remove(Number(id));
   }
 }

@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateGenreDto } from './dto/create-genre.dto';
 import { UpdateGenreDto } from './dto/update-genre.dto';
 import { Genre } from './entities/genre.entity';
+import { GenreNotFoundException } from './exceptions/genreNotFound.exception';
 
 @Injectable()
 export class GenresService {
@@ -21,7 +22,7 @@ export class GenresService {
     if (genre) {
       return genre;
     }
-    throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
+    throw new GenreNotFoundException(id);
   }
 
   async create(genre: CreateGenreDto) {
@@ -36,13 +37,13 @@ export class GenresService {
     if (updatedGenre) {
       return updatedGenre;
     }
-    throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
+    throw new GenreNotFoundException(id);
   }
 
   async remove(id: number) {
     const deleteResponse = await this.genresRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new HttpException('Genre not found', HttpStatus.NOT_FOUND);
+      throw new GenreNotFoundException(id);
     }
   }
 }
