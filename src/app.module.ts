@@ -9,6 +9,8 @@ import { GenresModule } from './genres/genres.module';
 import { PlatformsModule } from './platforms/platforms.module';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './database/database.module';
+import { AuthService } from './auth/auth.service';
+import { AuthenticationModule } from './authentication/authentication.module';
 import * as Joi from 'joi';
 
 @Module({
@@ -30,8 +32,9 @@ import * as Joi from 'joi';
       }),
     }),
     DatabaseModule,
+    AuthenticationModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, AuthService],
 })
 export class AppModule {}
