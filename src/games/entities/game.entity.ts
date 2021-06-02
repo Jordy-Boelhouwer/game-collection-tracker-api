@@ -8,21 +8,21 @@ export class Game {
   @Column()
   public title: string;
 
-  @Column()
+  @Column({ nullable: true })
   public description: string;
 
-  @Column()
+  @Column({ nullable: true })
   public coverArt: string;
 
-  @Column()
+  @Column({ nullable: true })
   public priceLoose: string;
 
-  @Column()
+  @Column({ nullable: true })
   public priceCIB: string;
 
-  @Column()
+  @Column({ nullable: true })
   public priceNew: string;
 
-  @Column()
+  @Column({ nullable: true })
   public release: Date;
 }
