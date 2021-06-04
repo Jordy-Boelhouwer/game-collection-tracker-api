@@ -22,7 +22,7 @@ export class UsersService {
     if (user) {
       return user;
     }
-    throw new UserNotFoundException(id);
+    throw new UserNotFoundException({ id: id });
   }
 
   async findOneByEmail(email: string) {
@@ -30,10 +30,7 @@ export class UsersService {
     if (user) {
       return user;
     }
-    throw new HttpException(
-      'User with this email does not exist',
-      HttpStatus.NOT_FOUND,
-    );
+    throw new UserNotFoundException({ email: email });
   }
 
   async create(user: CreateUserDto) {
@@ -48,13 +45,13 @@ export class UsersService {
     if (updatedUser) {
       return updatedUser;
     }
-    throw new UserNotFoundException(id);
+    throw new UserNotFoundException({ id: id });
   }
 
   async remove(id: number) {
     const deleteResponse = await this.usersRepository.delete(id);
     if (!deleteResponse.affected) {
-      throw new UserNotFoundException(id);
+      throw new UserNotFoundException({ id: id });
     }
   }
 }
