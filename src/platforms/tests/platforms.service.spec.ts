@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PlatformsService } from './platforms.service';
-import { Platform } from './entities/platform.entity';
-import { PlatformNotFoundException } from './exceptions/platformNotFound.exception';
+import { PlatformsService } from '../platforms.service';
+import { Platform } from '../entities/platform.entity';
+import { PlatformNotFoundException } from '../exceptions/platformNotFound.exception';
 
 describe('PlatformsService', () => {
   let platformsService: PlatformsService;
