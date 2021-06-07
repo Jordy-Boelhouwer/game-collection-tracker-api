@@ -10,5 +10,5 @@ export class Publisher {
   public name: string;
 
   @OneToMany(() => Game, (game: Game) => game.publisher)
-  public games: Game[];
+  public games?: Game[];
 }

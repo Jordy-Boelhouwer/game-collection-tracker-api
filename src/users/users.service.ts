@@ -13,10 +13,6 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll() {
-    return this.usersRepository.find();
-  }
-
   async findOneById(id: number) {
     const user = await this.usersRepository.findOne(id);
     if (user) {

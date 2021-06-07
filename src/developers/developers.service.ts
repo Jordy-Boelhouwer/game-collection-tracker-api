@@ -26,7 +26,7 @@ export class DevelopersService {
   }
 
   async create(developer: CreateDeveloperDto) {
-    const newDeveloper = await this.developersRepository.create(developer);
+    const newDeveloper = this.developersRepository.create(developer);
     await this.developersRepository.save(newDeveloper);
     return newDeveloper;
   }

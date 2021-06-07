@@ -10,5 +10,5 @@ export class Platform {
   public name: string;
 
   @ManyToMany(() => Game, (game: Game) => game.platforms)
-  public games: Game[];
+  public games?: Game[];
 }
