@@ -16,11 +16,6 @@ import { FindOneParams } from '../utils/findOneParams';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param() { id }: FindOneParams) {
     return this.usersService.findOneById(Number(id));
