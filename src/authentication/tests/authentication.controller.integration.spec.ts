@@ -15,7 +15,6 @@ import mockedUser from './user.mock';
 import { plainToClass } from 'class-transformer';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from '../strategies/jwt.strategy';
-import * as superagent from 'superagent';
 import * as cookieParser from 'cookie-parser';
 
 describe('AuthenticationController', () => {
@@ -23,7 +22,7 @@ describe('AuthenticationController', () => {
   let userData: User;
   let bcryptCompare: jest.Mock;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     userData = {
       ...mockedUser,
     };
@@ -64,6 +63,10 @@ describe('AuthenticationController', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   describe('when registering', () => {
     describe('and using valid data', () => {
       it('should respond with the data of the user', () => {
@@ -96,56 +99,34 @@ describe('AuthenticationController', () => {
   });
 
   describe('when logging in', () => {
-    describe('and using valid data', () => {
-      it('should respond with the data of the user', () => {
-        const expectedData = {
-          ...userData,
-        };
-
-        return request(app.getHttpServer())
+    it('should authenticate the user', async () => {
+      try {
+        const res = await request(app.getHttpServer())
           .post('/authentication/login')
           .send({
             email: mockedUser.email,
             password: mockedUser.password,
-          })
-          .expect(200)
-          .expect(expectedData);
-      });
+          });
+        expect(res.headers['set-cookie']).toEqual([
+          'Authentication=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImlhdCI6MTYyMzA2MTk4OSwiZXhwIjoxNjIzMDY1NTg5fQ.YsfUpWVEQAdFCyuRVoE0KT5ilDCeu-GGB6NmBnRHzew; HttpOnly; Path=/; Max-Age=3600',
+        ]);
+        expect(res.status).toBe(200);
+      } catch (error) {
+        throw error;
+      }
+    });
 
-      it('should save the jwt in a cookie', () => {
-        return request(app.getHttpServer())
+    it('should throw an 401 error when invalid data is given', async () => {
+      try {
+        const res = await request(app.getHttpServer())
           .post('/authentication/login')
           .send({
             email: mockedUser.email,
-            password: mockedUser.password,
-          })
-          .expect(
-            'set-cookie',
-            'Authentication=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImlhdCI6MTYyMzA2MTk4OSwiZXhwIjoxNjIzMDY1NTg5fQ.YsfUpWVEQAdFCyuRVoE0KT5ilDCeu-GGB6NmBnRHzew; HttpOnly; Path=/; Max-Age=3600',
-          );
-      });
+          });
+        expect(res.status).toBe(401);
+      } catch (error) {
+        throw error;
+      }
     });
-    describe('and using invalid data', () => {
-      it('should throw an error', () => {
-        return request(app.getHttpServer())
-          .post('/authentication/login')
-          .send({
-            email: mockedUser.email,
-          })
-          .expect(401);
-      });
-    });
-
-    // describe('and when logging out', () => {
-    //   it('should remove the jwt from the cookie', () => {
-    //     const cookie = 'Authentication=; HttpOnly; Path=/; Max-Age=3600';
-
-    //     return request(app.getHttpServer())
-    //       .post('/authentication/logout')
-    //       .set('set-cookie', cookie)
-    //       .send({})
-    //       .expect(200);
-    //   });
-    // });
   });
 });

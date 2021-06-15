@@ -23,6 +23,7 @@ import { JwtAuthenticationGuard } from './guards/jwtAuthentication.guard';
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
