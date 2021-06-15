@@ -41,9 +41,11 @@ export class GamesService {
   }
 
   async remove(id: number) {
-    const deleteResponse = await this.gamesRepository.delete(id);
-    if (!deleteResponse.affected) {
+    const game = await this.gamesRepository.findOne(id);
+    if (!game) {
       throw new GameNotFoundException(id);
     }
+    const deleteResponse = await this.gamesRepository.delete(id);
+    return {};
   }
 }
