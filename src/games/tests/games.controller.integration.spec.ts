@@ -1,16 +1,10 @@
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { Test } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 import * as request from 'supertest';
 import { Game } from '../entities/game.entity';
 import { MockedGames } from './games.mock';
 import { GamesController } from '../games.controller';
 import { GamesService } from '../games.service';
-import { MockedConfigService } from '../../utils/mocks/config.service';
-import { JwtService } from '@nestjs/jwt';
-import { MockedJwtService } from '../../utils/mocks/jwt.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('DeveloperController', () => {
@@ -30,7 +24,7 @@ describe('DeveloperController', () => {
 
     findGame = jest.fn().mockResolvedValue(gameData[0]);
     findAllGamesDevelopers = jest.fn().mockResolvedValue(gameData);
-    createGame = jest.fn().mockResolvedValue(plainToClass(Game, gameData[0]));
+    createGame = jest.fn().mockResolvedValue(gameData[0]);
     saveGame = jest.fn().mockReturnValue(Promise.resolve());
     updateGame = jest
       .fn()

@@ -41,9 +41,11 @@ export class GenresService {
   }
 
   async remove(id: number) {
-    const deleteResponse = await this.genresRepository.delete(id);
-    if (!deleteResponse.affected) {
+    const genre = await this.genresRepository.findOne(id);
+    if (!genre) {
       throw new GenreNotFoundException(id);
     }
+    const deleteResponse = await this.genresRepository.delete(id);
+    return {};
   }
 }

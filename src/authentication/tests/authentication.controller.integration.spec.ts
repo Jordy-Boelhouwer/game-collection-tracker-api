@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import * as bcrypt from 'bcrypt';
 import { AuthenticationService } from '../authentication.service';
@@ -15,7 +15,6 @@ import mockedUser from './user.mock';
 import { plainToClass } from 'class-transformer';
 import { LocalStrategy } from '../strategies/local.strategy';
 import { JwtStrategy } from '../strategies/jwt.strategy';
-import * as cookieParser from 'cookie-parser';
 
 describe('AuthenticationController', () => {
   let app: INestApplication;
@@ -59,7 +58,6 @@ describe('AuthenticationController', () => {
     }).compile();
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    app.use(cookieParser());
     await app.init();
   });
 
@@ -69,31 +67,40 @@ describe('AuthenticationController', () => {
 
   describe('when registering', () => {
     describe('and using valid data', () => {
-      it('should respond with the data of the user', () => {
+      it('should respond with the data of the user', async () => {
         const expectedData = {
           ...userData,
         };
 
         delete expectedData.password;
 
-        return request(app.getHttpServer())
-          .post('/authentication/register')
-          .send({
-            email: mockedUser.email,
-            password: 'strongPassword',
-          })
-          .expect(201)
-          .expect(expectedData);
+        try {
+          const response = await request(app.getHttpServer())
+            .post('/authentication/register')
+            .send({
+              email: mockedUser.email,
+              password: 'strongPassword',
+            });
+
+          expect(response.status).toBe(HttpStatus.CREATED);
+          expect(response.body).toStrictEqual(expectedData);
+        } catch (error) {
+          throw new Error(error);
+        }
       });
     });
     describe('and using invalid data', () => {
-      it('should throw an error', () => {
-        return request(app.getHttpServer())
-          .post('/authentication/register')
-          .send({
-            email: mockedUser.email,
-          })
-          .expect(400);
+      it('should throw an error', async () => {
+        try {
+          const response = await request(app.getHttpServer())
+            .post('/authentication/register')
+            .send({
+              email: mockedUser.email,
+            });
+          expect(response.status).toBe(HttpStatus.BAD_REQUEST);
+        } catch (error) {
+          throw new Error(error);
+        }
       });
     });
   });
@@ -101,16 +108,16 @@ describe('AuthenticationController', () => {
   describe('when logging in', () => {
     it('should authenticate the user', async () => {
       try {
-        const res = await request(app.getHttpServer())
+        const response = await request(app.getHttpServer())
           .post('/authentication/login')
           .send({
             email: mockedUser.email,
             password: mockedUser.password,
           });
-        expect(res.headers['set-cookie']).toEqual([
+        expect(response.headers['set-cookie']).toEqual([
           'Authentication=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjgsImlhdCI6MTYyMzA2MTk4OSwiZXhwIjoxNjIzMDY1NTg5fQ.YsfUpWVEQAdFCyuRVoE0KT5ilDCeu-GGB6NmBnRHzew; HttpOnly; Path=/; Max-Age=3600',
         ]);
-        expect(res.status).toBe(200);
+        expect(response.status).toBe(HttpStatus.OK);
       } catch (error) {
         throw error;
       }
@@ -118,12 +125,12 @@ describe('AuthenticationController', () => {
 
     it('should throw an 401 error when invalid data is given', async () => {
       try {
-        const res = await request(app.getHttpServer())
+        const response = await request(app.getHttpServer())
           .post('/authentication/login')
           .send({
             email: mockedUser.email,
           });
-        expect(res.status).toBe(401);
+        expect(response.status).toBe(HttpStatus.UNAUTHORIZED);
       } catch (error) {
         throw error;
       }

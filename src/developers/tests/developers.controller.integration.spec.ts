@@ -1,22 +1,15 @@
 import { HttpStatus, INestApplication, ValidationPipe } from '@nestjs/common';
-import { plainToClass } from 'class-transformer';
 import { Test } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcrypt';
 import * as request from 'supertest';
 import { Developer } from '../entities/developer.entity';
 import { MockedDevelopers } from './developer.mock';
 import { DevelopersController } from '../developers.controller';
 import { DevelopersService } from '../developers.service';
-import { MockedConfigService } from '../../utils/mocks/config.service';
-import { JwtService } from '@nestjs/jwt';
-import { MockedJwtService } from '../../utils/mocks/jwt.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
 describe('DeveloperController', () => {
   let app: INestApplication;
   let developerData: Developer[];
-  let bcryptCompare: jest.Mock;
   let findDeveloper: jest.Mock;
   let findAllDevelopers: jest.Mock;
   let createDeveloper: jest.Mock;
@@ -31,9 +24,7 @@ describe('DeveloperController', () => {
 
     findDeveloper = jest.fn().mockResolvedValue(developerData[0]);
     findAllDevelopers = jest.fn().mockResolvedValue(developerData);
-    createDeveloper = jest
-      .fn()
-      .mockResolvedValue(plainToClass(Developer, developerData[0]));
+    createDeveloper = jest.fn().mockResolvedValue(developerData[0]);
     saveDeveloper = jest.fn().mockReturnValue(Promise.resolve());
     updateDeveloper = jest
       .fn()
@@ -49,21 +40,10 @@ describe('DeveloperController', () => {
       delete: deleteDeveloper,
     };
 
-    bcryptCompare = jest.fn().mockReturnValue(true);
-    (bcrypt.compare as jest.Mock) = bcryptCompare;
-
     const module = await Test.createTestingModule({
       controllers: [DevelopersController],
       providers: [
         DevelopersService,
-        {
-          provide: ConfigService,
-          useValue: MockedConfigService,
-        },
-        {
-          provide: JwtService,
-          useValue: MockedJwtService,
-        },
         {
           provide: getRepositoryToken(Developer),
           useValue: developersRepository,

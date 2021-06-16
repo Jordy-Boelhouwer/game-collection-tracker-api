@@ -41,9 +41,11 @@ export class PlatformsService {
   }
 
   async remove(id: number) {
-    const deleteResponse = await this.platformsRepository.delete(id);
-    if (!deleteResponse.affected) {
+    const platform = await this.platformsRepository.findOne(id);
+    if (!platform) {
       throw new PlatformNotFoundException(id);
     }
+    const deleteResponse = await this.platformsRepository.delete(id);
+    return {};
   }
 }
