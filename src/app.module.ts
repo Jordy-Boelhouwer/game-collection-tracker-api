@@ -15,6 +15,7 @@ import { DatabaseModule } from './database/database.module';
 import { AuthenticationService } from './authentication/authentication.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { JwtAuthenticationGuard } from './authentication/guards/jwtAuthentication.guard';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { JwtAuthenticationGuard } from './authentication/guards/jwtAuthenticatio
     }),
     DatabaseModule,
     AuthenticationModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [
