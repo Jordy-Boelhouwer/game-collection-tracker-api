@@ -5,20 +5,20 @@ export class CreateGameDto {
   title: string;
   @IsString()
   @IsOptional()
-  description: string;
+  description?: string;
   @IsString()
   @IsOptional()
-  coverArt: string;
+  coverArt?: string;
   @IsString()
   @IsOptional()
-  priceLoose: string;
+  priceLoose?: string;
   @IsString()
   @IsOptional()
-  priceCIB: string;
+  priceCIB?: string;
   @IsString()
   @IsOptional()
-  priceNew: string;
+  priceNew?: string;
   @IsDate()
   @IsOptional()
-  release: Date;
+  release?: Date;
 }

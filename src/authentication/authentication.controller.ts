@@ -16,16 +16,17 @@ import { RegisterDto } from './dto/register.dto';
 import { LocalAuthenticationGuard } from './guards/localAuthentication.guard';
 import { RequestWithUser } from './interfaces/requestWithUser.interface';
 import { Public } from './decorators/public.decorator';
+import { JwtAuthenticationGuard } from './guards/jwtAuthentication.guard';
 
 @Controller('authentication')
 @UseInterceptors(ClassSerializerInterceptor)
 export class AuthenticationController {
   constructor(private readonly authenticationService: AuthenticationService) {}
 
+  @UseGuards(JwtAuthenticationGuard)
   @Get()
   authenticate(@Req() request: RequestWithUser) {
     const user = request.user;
-    user.password = undefined;
     return user;
   }
 
@@ -46,12 +47,13 @@ export class AuthenticationController {
     return user;
   }
 
-  @Post('log-out')
-  async logOut(@Req() request: RequestWithUser, @Res() response: Response) {
-    response.setHeader(
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('logout')
+  @HttpCode(200)
+  async logOut(@Req() request: RequestWithUser) {
+    request.res.setHeader(
       'Set-Cookie',
       this.authenticationService.getCookieForLogOut(),
     );
-    return response.sendStatus(200);
   }
 }

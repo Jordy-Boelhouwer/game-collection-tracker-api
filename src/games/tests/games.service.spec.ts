@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { GamesService } from './games.service';
-import { Game } from '../games/entities/game.entity';
-import { GameNotFoundException } from './exceptions/gameNotFound.exception';
+import { GamesService } from '../games.service';
+import { Game } from '../entities/game.entity';
+import { GameNotFoundException } from '../exceptions/gameNotFound.exception';
 
 describe('GamesService', () => {
   let gamesService: GamesService;

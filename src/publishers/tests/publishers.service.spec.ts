@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { PublishersService } from './publishers.service';
-import { Publisher } from './entities/publisher.entity';
-import { PublisherNotFoundException } from './exceptions/publisherNotFound.exception';
+import { PublishersService } from '../publishers.service';
+import { Publisher } from '../entities/publisher.entity';
+import { PublisherNotFoundException } from '../exceptions/publisherNotFound.exception';
 
 describe('PublishersService', () => {
   let publishersService: PublishersService;

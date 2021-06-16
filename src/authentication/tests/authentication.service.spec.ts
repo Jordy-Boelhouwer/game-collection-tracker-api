@@ -2,12 +2,12 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
-import { AuthenticationService } from './authentication.service';
-import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
+import { AuthenticationService } from '../authentication.service';
+import { UsersService } from '../../users/users.service';
+import { User } from '../../users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { MockedConfigService } from '../utils/mocks/config.service';
-import { MockedJwtService } from '../utils/mocks/jwt.service';
+import { MockedConfigService } from '../../utils/mocks/config.service';
+import { MockedJwtService } from '../../utils/mocks/jwt.service';
 
 jest.mock('bcrypt');
 describe('AuthenticationService', () => {

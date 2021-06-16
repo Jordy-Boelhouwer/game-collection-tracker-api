@@ -21,37 +21,37 @@ export class Game {
   public title: string;
 
   @Column({ nullable: true })
-  public description: string;
+  public description?: string;
 
   @Column({ nullable: true })
-  public coverArt: string;
+  public coverArt?: string;
 
   @Column({ nullable: true })
-  public priceLoose: string;
+  public priceLoose?: string;
 
   @Column({ nullable: true })
-  public priceCIB: string;
+  public priceCIB?: string;
 
   @Column({ nullable: true })
-  public priceNew: string;
+  public priceNew?: string;
 
   @Column({ nullable: true })
-  public release: Date;
+  public release?: Date;
 
   @ManyToOne(() => Publisher, (publisher: Publisher) => publisher.games)
-  public publisher: Publisher;
+  public publisher?: Publisher;
 
   @ManyToMany(() => Developer, (developer: Developer) => developer.games)
-  public developers: Developer[];
+  public developers?: Developer[];
 
   @ManyToMany(() => Genre, (genre: Genre) => genre.games)
   @JoinTable({ name: 'game_genre' })
-  public genres: Genre[];
+  public genres?: Genre[];
 
   @ManyToMany(() => Platform, (platform: Platform) => platform.games)
   @JoinTable({ name: 'game_version' })
-  public platforms: Platform[];
+  public platforms?: Platform[];
 
   @ManyToMany(() => User, (user: User) => user.games)
-  public owners: User[];
+  public owners?: User[];
 }

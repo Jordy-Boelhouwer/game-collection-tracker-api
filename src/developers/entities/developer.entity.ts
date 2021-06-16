@@ -17,5 +17,5 @@ export class Developer {
 
   @ManyToMany(() => Game, (game: Game) => game.developers)
   @JoinTable({ name: 'game_developer' })
-  public games: Game[];
+  public games?: Game[];
 }

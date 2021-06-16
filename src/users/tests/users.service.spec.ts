@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { UsersService } from './users.service';
-import { User } from './entities/user.entity';
-import { UserNotFoundException } from './exceptions/userNotFoundException';
+import { UsersService } from '../users.service';
+import { User } from '../entities/user.entity';
+import { UserNotFoundException } from '../exceptions/userNotFoundException';
 
 describe('UsersService', () => {
   let usersService: UsersService;

@@ -41,9 +41,11 @@ export class PublishersService {
   }
 
   async remove(id: number) {
-    const deleteResponse = await this.publishersRepository.delete(id);
-    if (!deleteResponse.affected) {
+    const publisher = await this.publishersRepository.findOne(id);
+    if (!publisher) {
       throw new PublisherNotFoundException(id);
     }
+    await this.publishersRepository.delete(id);
+    return {};
   }
 }

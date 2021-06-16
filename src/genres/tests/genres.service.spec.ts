@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { GenresService } from './genres.service';
-import { Genre } from './entities/genre.entity';
-import { GenreNotFoundException } from './exceptions/genreNotFound.exception';
+import { GenresService } from '../genres.service';
+import { Genre } from '../entities/genre.entity';
+import { GenreNotFoundException } from '../exceptions/genreNotFound.exception';
 
 describe('GenresService', () => {
   let genresService: GenresService;
