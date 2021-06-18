@@ -38,6 +38,7 @@ export class GamesService {
     await this.gamesRepository.update(id, game);
     const updatedGame = await this.gamesRepository.findOne(id);
     if (updatedGame) {
+      await this.gamesSearchService.update(updatedGame);
       return updatedGame;
     }
     throw new GameNotFoundException(id);
@@ -48,7 +49,8 @@ export class GamesService {
     if (!game) {
       throw new GameNotFoundException(id);
     }
-    const deleteResponse = await this.gamesRepository.delete(id);
+    await this.gamesRepository.delete(id);
+    await this.gamesSearchService.remove(id);
     return {};
   }
 

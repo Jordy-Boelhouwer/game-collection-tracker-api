@@ -35,4 +35,42 @@ export default class GamesSearchService {
     const hits = body.hits.hits;
     return hits.map((item) => item._source);
   }
+
+  async remove(gameId: number) {
+    this.elasticsearchService.deleteByQuery({
+      index: this.index,
+      body: {
+        query: {
+          match: {
+            id: gameId,
+          },
+        },
+      },
+    });
+  }
+
+  async update(game: Game) {
+    const newBody: GameSearchBody = {
+      id: game.id,
+      title: game.title,
+    };
+
+    const script = Object.entries(newBody).reduce((result, [key, value]) => {
+      return `${result} ctx._source.${key}='${value}';`;
+    }, '');
+
+    return this.elasticsearchService.updateByQuery({
+      index: this.index,
+      body: {
+        query: {
+          match: {
+            id: game.id,
+          },
+        },
+        script: {
+          inline: script,
+        },
+      },
+    });
+  }
 }
