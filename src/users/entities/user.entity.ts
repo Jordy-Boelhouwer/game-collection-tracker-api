@@ -20,6 +20,12 @@ export class User {
   @Exclude()
   public password: string;
 
+  @Column({
+    nullable: true,
+  })
+  @Exclude()
+  public currentHashedRefreshToken?: string;
+
   @ManyToMany(() => Game, (game: Game) => game.owners)
   @JoinTable({ name: 'game_owner' })
   public games?: Game[];
