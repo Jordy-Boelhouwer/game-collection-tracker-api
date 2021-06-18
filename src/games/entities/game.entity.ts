@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -41,6 +42,7 @@ export class Game {
   @ManyToOne(() => Publisher, (publisher: Publisher) => publisher.games)
   public publisher?: Publisher;
 
+  @Index('game_developerId_index')
   @ManyToMany(() => Developer, (developer: Developer) => developer.games)
   public developers?: Developer[];
 
