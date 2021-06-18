@@ -8,6 +8,7 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  Query,
 } from '@nestjs/common';
 import { GamesService } from './games.service';
 import { CreateGameDto } from './dto/create-game.dto';
@@ -19,7 +20,10 @@ export class GamesController {
   constructor(private readonly gamesService: GamesService) {}
 
   @Get()
-  findAll() {
+  findAll(@Query('search') search: string) {
+    if (search) {
+      return this.gamesService.searchForGames(search);
+    }
     return this.gamesService.findAll();
   }
 
