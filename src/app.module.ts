@@ -35,6 +35,8 @@ import { SearchModule } from './search/search.module';
         PORT: Joi.number(),
         JWT_SECRET: Joi.string().required(),
         JWT_EXPIRATION_TIME: Joi.string().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+        JWT_REFRESH_EXPIRATION_TIME: Joi.string().required(),
       }),
     }),
     DatabaseModule,
